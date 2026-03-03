@@ -1,0 +1,20 @@
+# Build outputs
+**/bin/
+**/obj/
+
+# Visual Studio / IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# NuGet / packages
+packages/
+*.nupkg
+project.assets.json
+
+# Local settings (ignore if they contain secrets)
+**/appsettings.Development.json
+backend/backend.http
+backend/appsettings.json
+smart-bookshelf.sln
