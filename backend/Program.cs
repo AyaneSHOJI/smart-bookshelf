@@ -18,6 +18,8 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.WebHost.UseUrls("https://localhost:7094","http://localhost:5278");
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
