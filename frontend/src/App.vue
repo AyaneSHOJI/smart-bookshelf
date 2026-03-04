@@ -1,17 +1,29 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import axios from "axios";
+import { ref } from "vue";
+
+interface BookDto {
+  id: number;
+  title: string;
+  author: string;
+}
+
+const books = ref<BookDto[]>([]);
+
+async function loadBooks() {
+  const res = await axios.get<BookDto[]>("https://localhost:7094/api/books/");
+  books.value = res.data;
+}
 </script>
 
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <button @click="loadBooks">Load books</button>
+
+  <div v-for="book in books" :key="book.id">
+    <p>{{ book.title }}</p>
+    <p>{{ book.author }}</p>
+    <br />
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
 <style scoped>
