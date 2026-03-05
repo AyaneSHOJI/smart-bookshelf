@@ -2,6 +2,7 @@
 import axios from "axios";
 import type { EnumMember } from "typescript";
 import { ref } from "vue";
+import { computed } from "vue";
 
 interface BookDto {
   id: number;
@@ -46,6 +47,20 @@ function submit() {
   form.value.title = "";
   form.value.author = "";
 }
+
+const keyword = ref("");
+
+const filteredBooks = computed(() => {
+  return books.value.filter((book) =>
+    book.title.toLocaleLowerCase().includes(keyword.value.toLocaleLowerCase()),
+  );
+});
+
+const sortedBooks = computed(() =>{
+  return [...filteredBooks.value].sort((a,b) =>
+  a.title.localeCompare(b.title))
+}
+)
 </script>
 
 <template>
@@ -60,6 +75,11 @@ function submit() {
           <br />
         </div>
       </div>
+
+      <input v-model="keyword" placeholder="Research" />
+      <li v-if="sortedBooks" v-for="book in sortedBooks" :key="book.id">
+        {{ book.title }}
+      </li>
     </div>
 
     <div class="right-section">
