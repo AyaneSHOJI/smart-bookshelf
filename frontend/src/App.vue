@@ -1,51 +1,23 @@
 <script setup lang="ts">
 import axios from "axios";
 import type { EnumMember } from "typescript";
-import { ref } from "vue";
-import { computed } from "vue";
-
-interface BookDto {
-  id: number;
-  title: string;
-  author: string;
-  type: EnumMember;
-  category: EnumMember;
-  IsLent: boolean;
-  ToWhomLent: string;
-}
-
-interface BookForm {
-  title: string;
-  author: string;
-}
+import { ref, computed, onMounted } from "vue";
+import type { BookDto } from "./types/Book";
+import BookList from "./components/BookList.vue";
+import AddBookForm from "./components/AddBookForm.vue";
 
 const books = ref<BookDto[]>([]);
 
 async function loadBooks() {
-  const res = await axios.get<BookDto[]>("https://localhost:7094/api/books/");
+  const res = await axios.get<BookDto[]>("/api/books/");
   books.value = res.data;
 }
 
-const form = ref<BookForm>({
-  title: "",
-  author: "",
-});
+onMounted(loadBooks);
 
-const title = ref("");
-
-function submit() {
-  const newBook: BookDto = {
-    id: books.value.length + 1,
-    title: form.value.title,
-    author: form.value.author,
-    type: undefined as any,
-    category: undefined as any,
-    IsLent: false,
-    ToWhomLent: "",
-  };
-  books.value.push(newBook);
-  form.value.title = "";
-  form.value.author = "";
+function addBook(book: BookDto) {
+  const nextId = (books.value.length > 0 ? Math.max(...books.value.map((b) => b.id)) : 0) + 1;
+  books.value.push({ ...book, id: nextId });
 }
 
 const keyword = ref("");
@@ -56,37 +28,21 @@ const filteredBooks = computed(() => {
   );
 });
 
-const sortedBooks = computed(() =>{
-  return [...filteredBooks.value].sort((a,b) =>
-  a.title.localeCompare(b.title))
-}
-)
+const sortedBooks = computed(() => {
+  return [...filteredBooks.value].sort((a, b) =>
+    a.title.localeCompare(b.title),
+  );
+});
 </script>
 
 <template>
   <div class="container">
     <div class="left-section">
-      <button @click="loadBooks">Load books</button>
-
-      <div v-for="book in books" :key="book.id">
-        <div>
-          <p>{{ book.title }}</p>
-          <p>{{ book.author }}</p>
-          <br />
-        </div>
-      </div>
-
-      <input v-model="keyword" placeholder="Research" />
-      <li v-if="sortedBooks" v-for="book in sortedBooks" :key="book.id">
-        {{ book.title }}
-      </li>
+      <BookList :books="books" />
     </div>
 
     <div class="right-section">
-      <input v-model="form.title" placeholder="Title" />
-      <input v-model="form.author" placeholder="Author" />
-      <p>{{ title }}</p>
-      <button v-on:click="submit">Submit</button>
+      <AddBookForm @add="addBook" />
     </div>
   </div>
 </template>

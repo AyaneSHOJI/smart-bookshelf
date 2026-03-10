@@ -12,9 +12,22 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+            if (builder.Environment.IsDevelopment())
+            {
+                // In development we allow any origin to avoid localhost/port mismatches.
+                policy.AllowAnyOrigin()
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            }
+            else
+            {
+                // In production, be strict about allowed origins.
+                policy.WithOrigins(
+                        "https://your-production-domain.com"
+                    )
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            }
         });
 });
 
