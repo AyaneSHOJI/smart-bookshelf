@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import type { BookDto } from "types/Book";
+import type { BookDTO } from "../types/Book";
+import { useBookStore } from "../stores/bookstore";
 
 defineProps<{
-  book: Book;
+  book: BookDTO;
 }>();
 </script>
 
 <template>
   <li>
     {{ book.title }}
-    {{ book.author }}
   </li>
 </template>

@@ -1,27 +1,17 @@
 <script setup lang="ts">
-import type { BookDto } from "types/Book";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import BookItem from "./BookItem.vue";
+import { useBookStore } from "../stores/bookstore";
 
-const props = defineProps<{ books: BookDto[] }>();
-
+const store = useBookStore();
 const keyword = ref("");
-
-const filteredBooks = computed(() => {
-  return props.books.filter((book) =>
-    book.title.toLocaleLowerCase().includes(keyword.value.toLocaleLowerCase()),
-  );
-});
-
-const sortedBooks = computed(() => {
-  return [...filteredBooks.value].sort((a, b) =>
-    a.title.localeCompare(b.title),
-  );
-});
 </script>
 
 <template>
-  <BookItem v-for="book in sortedBooks" :key="book.id" :book="book" />
+  <ul v-if="Array.isArray(store.books) && store.books.length">
+    <BookItem v-for="book in store.books" :key="book.id" :book="book" />
+  </ul>
+  <div v-else>No books found.</div>
 
   <input v-model="keyword" placeholder="Search" />
 </template>
