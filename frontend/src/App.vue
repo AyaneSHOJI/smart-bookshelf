@@ -3,29 +3,18 @@ import { ref, computed, onMounted } from "vue";
 
 import BookList from "./components/BookList.vue";
 import AddBookForm from "./components/AddBookForm.vue";
-import { useBookStore } from "./stores/bookstore.ts"
+import { useBookStore } from "./stores/bookstore.ts";
 
 const store = useBookStore();
 
 onMounted(() => {
-  store.fetchBooks()
+  store.fetchBooks();
   console.log("Books fetched:", JSON.stringify(store.books));
 });
-
-
-
 </script>
 
 <template>
-  <div class="container">
-    <div class="left-section">
-      <BookList />
-    </div>
-
-    <div class="right-section">
-      <AddBookForm/>
-    </div>
-  </div>
+  <router-view />
 </template>
 
 <style scoped>
