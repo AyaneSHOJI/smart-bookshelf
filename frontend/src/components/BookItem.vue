@@ -2,13 +2,16 @@
 import type { BookDTO } from "../types/Book";
 import { useBookStore } from "../stores/bookstore";
 
-defineProps<{
+const props = defineProps<{
   book: BookDTO;
 }>();
+
 </script>
 
 <template>
+<router-link :to="`/books/${props.book.id}`" >
   <li>
-    {{ book.title }}
+    {{ props.book.title }}
   </li>
+</router-link>
 </template>
