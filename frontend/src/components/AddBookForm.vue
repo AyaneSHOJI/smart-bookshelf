@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import type { BookDto } from "./types/Book";
+import type { BookDTO } from "../types/Book";
+import { useBookStore } from "../stores/bookstore.ts"
+
+const store = useBookStore;
 
 interface BookForm {
   title: string;
   author: string;
 }
 
-const emit = defineEmits<{ (e: "add", book: BookDto): void }>();
+const emit = defineEmits<{ (e: "add", book: BookDTO): void }>();
 
 const form = ref<BookForm>({
   title: "",
@@ -15,17 +18,7 @@ const form = ref<BookForm>({
 });
 
 function submit() {
-  const newBook: BookDto = {
-    id: 0,
-    title: form.value.title,
-    author: form.value.author,
-    type: undefined as any,
-    category: undefined as any,
-    IsLent: false,
-    ToWhomLent: "",
-  };
-
-  emit("add", newBook);
+  store
   form.value.title = "";
   form.value.author = "";
 }

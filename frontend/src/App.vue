@@ -1,48 +1,29 @@
 <script setup lang="ts">
-import axios from "axios";
-import type { EnumMember } from "typescript";
 import { ref, computed, onMounted } from "vue";
-import type { BookDto } from "./types/Book";
+
 import BookList from "./components/BookList.vue";
 import AddBookForm from "./components/AddBookForm.vue";
+import { useBookStore } from "./stores/bookstore.ts"
 
-const books = ref<BookDto[]>([]);
+const store = useBookStore();
 
-async function loadBooks() {
-  const res = await axios.get<BookDto[]>("/api/books/");
-  books.value = res.data;
-}
-
-onMounted(loadBooks);
-
-function addBook(book: BookDto) {
-  const nextId = (books.value.length > 0 ? Math.max(...books.value.map((b) => b.id)) : 0) + 1;
-  books.value.push({ ...book, id: nextId });
-}
-
-const keyword = ref("");
-
-const filteredBooks = computed(() => {
-  return books.value.filter((book) =>
-    book.title.toLocaleLowerCase().includes(keyword.value.toLocaleLowerCase()),
-  );
+onMounted(() => {
+  store.fetchBooks()
+  console.log("Books fetched:", JSON.stringify(store.books));
 });
 
-const sortedBooks = computed(() => {
-  return [...filteredBooks.value].sort((a, b) =>
-    a.title.localeCompare(b.title),
-  );
-});
+
+
 </script>
 
 <template>
   <div class="container">
     <div class="left-section">
-      <BookList :books="books" />
+      <BookList />
     </div>
 
     <div class="right-section">
-      <AddBookForm @add="addBook" />
+      <AddBookForm/>
     </div>
   </div>
 </template>
