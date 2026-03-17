@@ -16,4 +16,5 @@ const book = computed(() =>
     <h2>{{ book.title }}</h2>
     <p>{{ book.author }}</p>
   </div>
+  <div v-else>No book found.</div>
 </template>

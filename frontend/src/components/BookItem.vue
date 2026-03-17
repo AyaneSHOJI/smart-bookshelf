@@ -6,7 +6,6 @@ const props = defineProps<{
   book: BookDTO;
 }>();
 
-const store = useBookStore()
 </script>
 
 <template>
